@@ -1,0 +1,30 @@
+# Backlog
+
+## Product Ideas
+
+- Meal of the day
+- Protein per dollar
+- Calories per dollar
+- Price history
+- Favorites
+- Search
+
+---
+
+## Technical Ideas
+
+- Redis caching
+- Docker
+- Background workers
+- S3 image storage
+- Recommendation engine
+
+---
+
+## Stretch Goals
+
+- Android app
+- iOS app
+- Push notifications
+- AI extraction agent
+- OCR for flyers

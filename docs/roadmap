@@ -1,0 +1,61 @@
+# Roadmap
+
+## Vision
+
+Help Berkeley students answer:
+
+> "What's the cheapest good meal I can get right now?"
+
+---
+
+# MVP
+
+## Core Features
+
+- [ ] Homepage feed
+- [ ] Restaurant offers
+- [ ] Free food events
+- [ ] Best value meals
+- [ ] Filtering
+- [ ] Restaurant detail page
+
+---
+
+# Data Sources
+
+- [ ] Manual seed data
+- [ ] Restaurant promotions
+- [ ] Club events
+- [ ] Department events
+
+---
+
+# Technical Milestones
+
+## Phase 1
+- React frontend
+- FastAPI backend
+- PostgreSQL
+- Basic API
+
+## Phase 2
+- Real database
+- Filtering
+- Value ranking
+
+## Phase 3
+- Scrapers
+- Background jobs
+- Data cleaning
+
+## Phase 4
+- Docker
+- Redis
+- Deployment
+
+## Future
+
+- Personalized recommendations
+- Notifications
+- AI extraction agent
+- Price history

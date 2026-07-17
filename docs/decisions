@@ -1,0 +1,27 @@
+# Architecture Decisions
+
+---
+
+## ADR-001
+
+Status:
+Accepted
+
+Decision:
+Use FastAPI for the backend.
+
+Reasoning:
+
+- Familiar with Python
+- Strong typing
+- Good documentation
+- Easy data processing
+
+Alternatives:
+
+- Express
+- Django
+
+Tradeoffs:
+
+- Smaller ecosystem than Express

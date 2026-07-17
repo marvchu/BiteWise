@@ -1,0 +1,64 @@
+# Architecture
+
+## Goal
+
+Describe the high-level architecture of the application.
+
+---
+
+# User Flow
+
+(To be designed)
+
+---
+
+# Components
+
+Frontend
+
+Responsibilities:
+-
+
+Backend
+
+Responsibilities:
+-
+
+Database
+
+Responsibilities:
+-
+
+Scrapers
+
+Responsibilities:
+-
+
+---
+
+# Data Flow
+
+(To be designed)
+
+---
+
+# Core Entities
+
+Unknown.
+
+Potential entities:
+
+- Restaurant
+- Offer
+- Event
+- Category
+- Source
+
+---
+
+# Open Questions
+
+- What is the main object in the app?
+- How should recommendations work?
+- How should recurring deals be represented?
+- Should events and offers share a model?
