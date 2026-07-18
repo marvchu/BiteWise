@@ -1,0 +1,11 @@
+# Web framework
+fastapi
+uvicorn[standard]
+
+# Database
+sqlalchemy
+psycopg[binary]
+alembic
+
+# Config
+pydantic-settings
