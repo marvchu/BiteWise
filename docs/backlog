@@ -1,30 +1,138 @@
 # Backlog
 
-## Product Ideas
+This document contains features that are planned but not yet implemented.
 
-- Meal of the day
-- Protein per dollar
-- Calories per dollar
-- Price history
-- Favorites
+Items are grouped by priority rather than by technical category.
+
+---
+
+# MVP (Current Focus)
+
+These features are required before the first usable release.
+
+## Core Experience
+
+- Homepage dashboard
+- Best protein-per-dollar meals
+- Best calories-per-dollar meals
+- Meals under a configurable price
+- Active restaurant deals
+- Restaurant detail page
+- Menu item detail page
+- Filtering
+    - Maximum price
+    - Minimum protein
+    - Calories
+    - Distance
+- Sorting
+    - Lowest price
+    - Protein per dollar
+    - Calories per dollar
+
+## Backend
+
+- Restaurant models
+- Menu item models
+- Deal models
+- Homepage endpoint
+- Restaurant endpoints
+- Menu item endpoints
+- Deal endpoints
+- Manual seed data
+
+---
+
+# Version 1
+
+These features improve the experience after the MVP is working.
+
+## Product
+
 - Search
+- Favorites
+- Recently viewed restaurants
+- Distance-based recommendations
+- Opening hours
+- Restaurant categories
+- Meal categories
 
+## Data
+
+- Menu ingestion scripts
+- Restaurant scrapers
+- Automatic menu updates
+- Duplicate detection
+- Source tracking
+- Data validation
+
+Data Quality
+
+- Nutrition status
+- Missing nutrition handling
+- Source tracking
+- Last verified timestamp
 ---
 
-## Technical Ideas
+# Version 2
 
-- Redis caching
-- Docker
+Features that increase engagement.
+
+## Product
+
+- Free food events
+- Price history
+- Deal history
+- Trending meals
+- Trending restaurants
+- Save money statistics
+- Personalized homepage
+- Notifications for new deals
+
+## Technical
+
 - Background workers
-- S3 image storage
-- Recommendation engine
+- Scheduled scraping
+- Redis caching
+- Image storage
+- API rate limiting
+- Monitoring
+- Logging
 
 ---
 
-## Stretch Goals
+# Future Ideas
 
+Interesting ideas that are intentionally out of scope for now.
+
+## Product
+
+- AI meal recommendations
+- Nutrition goals
+- Weekly meal planning
+- Budget planner
+- Social sharing
+- Meal reviews
 - Android app
 - iOS app
-- Push notifications
-- AI extraction agent
+
+## AI
+
 - OCR for flyers
+- AI extraction agent
+- Automatic menu parsing
+- Automatic deal extraction
+- Semantic search
+
+---
+
+# Architecture Improvements
+
+Implement only after they become necessary.
+
+- Docker
+- CI/CD
+- S3 image storage
+- Recommendation engine
+- Background job queue
+- Analytics dashboard
+- Caching layer

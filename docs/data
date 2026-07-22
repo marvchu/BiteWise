@@ -1,0 +1,39 @@
+atabase
+
+Technology:
+
+PostgreSQL
+
+Responsibilities:
+
+Store restaurant information
+Store physical restaurant locations
+Store menu items and nutritional information
+Store temporary deals and promotions
+Represent relationships between restaurants, locations, menu items, and deals
+Enforce data constraints and relationships
+Support filtering and sorting queries
+Track data sources and update timestamps
+
+The database does not know about API paths such as /menu-items or /deals. Those paths are defined by FastAPI.
+
+Initial data can be entered manually through a seed script before automated ingestion is added.
+
+
+
+Scrapers and Data Ingestion
+
+Responsibilities:
+
+Collect restaurant, menu, price, nutrition, and promotion data from permitted public sources
+Convert external data into BiteWise's internal data format
+Validate required fields
+Normalize restaurant names, item names, prices, and nutritional values
+Avoid inserting duplicate records
+Track where each record came from
+Update existing data when menu information changes
+Record when data was last verified
+
+Scrapers should not be required for the first working version.
+
+The initial MVP should use manually seeded data so the database, API, and frontend flow can be developed before ingestion automation.

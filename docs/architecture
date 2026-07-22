@@ -2,63 +2,97 @@
 
 ## Goal
 
-Describe the high-level architecture of the application.
+BiteWise helps Berkeley students quickly find the best-value meals and active food deals nearby.
+
+The application ranks menu items using factors such as:
+
+- Price
+- Protein per dollar (optional)
+- Calories per dollar (optional)
+- Distance
+- Current promotions
+
+The first version should prioritize a simple homepage that immediately shows useful food options without requiring the user to search.
 
 ---
 
 # User Flow
 
-(To be designed)
+1. The user opens the BiteWise homepage.
+2. The frontend requests homepage data from the backend.
+3. The backend retrieves menu items, restaurant locations, and active deals from the database.
+4. The backend calculates or retrieves value metrics such as protein per dollar and calories per dollar.
+5. The homepage displays sections such as:
+   - Best protein per dollar
+   - Best calories per dollar
+   - Meals under a selected price
+   - Active deals
+6. The user can:
+   - Filter menu items by price or nutrition
+   - Sort menu items by value
+   - Open a menu item or restaurant for more details
+   - Browse active promotions
+
+Later versions may add free-food events, saved meals, personalization, and notifications.
 
 ---
 
 # Components
 
-Frontend
+## Frontend
+
+Technology:
+
+- React
 
 Responsibilities:
--
 
-Backend
+- Display the homepage and food listings
+- Request data from the FastAPI backend
+- Store interface state such as selected filters and sorting options
+- Render menu items, restaurants, and deals
+- Allow users to filter by price, protein, calories, and distance
+- Display loading, empty, and error states
+- Navigate between homepage, restaurant, menu-item, and deal views
 
-Responsibilities:
--
-
-Database
-
-Responsibilities:
--
-
-Scrapers
-
-Responsibilities:
--
+The frontend should not contain database logic or duplicate backend ranking logic.
 
 ---
 
-# Data Flow
+## Backend
 
-(To be designed)
+Technology:
 
----
+- FastAPI
 
-# Core Entities
+Responsibilities:
 
-Unknown.
+- Expose API endpoints for restaurants, locations, menu items, deals, and homepage data
+- Validate request parameters and response data
+- Apply menu-item filtering and sorting
+- Calculate value metrics such as protein per dollar and calories per dollar
+- Retrieve and combine data from the database
+- Assemble the homepage response
+- Keep business logic separate from route definitions
+- Provide a reusable API for a future mobile application
 
-Potential entities:
+Example endpoints:
 
-- Restaurant
-- Offer
-- Event
-- Category
-- Source
+```text
+GET /homepage
 
----
+GET /restaurants
+GET /restaurants/{restaurant_id}
 
-# Open Questions
+GET /menu-items
+GET /menu-items/{menu_item_id}
 
-- What is the main object in the app?
-- How should recommendations work?
-- How should recurring deals be represented?
-- Should events and offers share a model?
+GET /deals
+GET /deals/{deal_id}
+
+Example menu-item queries:
+
+GET /menu-items?max_price=10
+GET /menu-items?min_protein=30
+GET /menu-items?sort=protein_per_dollar
+GET /menu-items?max_price=12&sort=calories_per_dollar
