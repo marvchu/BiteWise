@@ -9,3 +9,7 @@ alembic
 
 # Config
 pydantic-settings
+
+# Testing
+pytest
+httpx
