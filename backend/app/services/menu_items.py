@@ -69,6 +69,6 @@ def get_menu_items(
 
 
 def get_menu_item(menu_item_id: int) -> Optional[MenuItemWithMetrics]:
-    from data.stub_data import get_menu_item_by_id
+    from db.stub_data import get_menu_item_by_id
     item = get_menu_item_by_id(menu_item_id)
     return compute_metrics(item) if item else None
