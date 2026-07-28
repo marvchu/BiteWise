@@ -13,7 +13,7 @@ def list_menu_items(
     sort: str | None = Query(default=None),
 ):
     try:
-        return menu_items_service.get_menu_items(
+        return menu_items_service.list_menu_items(
             max_price=max_price, min_protein=min_protein, sort=sort
         )
     except ValueError as e:
@@ -21,7 +21,7 @@ def list_menu_items(
 
 
 @router.get("/{menu_item_id}", response_model=MenuItemWithMetrics)
-def get_menu_item(menu_item_id: int):
+def read_menu_item(menu_item_id: int):
     item = menu_items_service.get_menu_item(menu_item_id)
     if item is None:
         raise HTTPException(status_code=404, detail="Menu item not found")

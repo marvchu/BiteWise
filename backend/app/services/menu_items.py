@@ -34,7 +34,7 @@ def compute_metrics(item: MenuItem) -> MenuItemWithMetrics:
     )
 
 
-def get_menu_items(
+def list_menu_items(
     max_price: Optional[float] = None,
     min_protein: Optional[float] = None,
     sort: Optional[str] = None,
