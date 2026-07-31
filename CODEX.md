@@ -74,9 +74,9 @@ Avoid:
 
 Important design information lives in:
 
-docs/architecture.md
-docs/roadmap.md
-docs/decisions.md
-docs/database.md
+docs/architecture
+docs/roadmap
+docs/decisions
+docs/data
 
 Read relevant documents when making changes.
