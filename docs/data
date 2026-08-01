@@ -37,3 +37,35 @@ Record when data was last verified
 Scrapers should not be required for the first working version.
 
 The initial MVP should use manually seeded data so the database, API, and frontend flow can be developed before ingestion automation.
+
+
+Menu Item Imagery
+
+Imagery should be added only when it helps students recognize and compare food options faster.
+
+Recommended fields for a future menu item model:
+
+- image_url
+- image_alt_text
+- image_source
+- category
+
+`image_url` should point to a verified image of the actual menu item when available.
+
+`image_alt_text` should describe the visible food plainly, such as "Chicken burrito bowl with rice and toppings."
+
+`image_source` should record where the image came from so the data can be reviewed later.
+
+`category` can support fallback visuals when no verified item image exists. Suggested starting categories:
+
+- bowl
+- burger
+- sandwich
+- burrito
+- noodles
+- rice
+- salad
+- drink
+- unknown
+
+For the MVP, prefer manually assigning `category` in seed data over automatic classification. If the category is uncertain, use `unknown`.
