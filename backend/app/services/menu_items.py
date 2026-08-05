@@ -37,6 +37,8 @@ def compute_metrics(item: MenuItem) -> MenuItemWithMetrics:
 def list_menu_items(
     max_price: Optional[float] = None,
     min_protein: Optional[float] = None,
+    min_calories: Optional[float] = None,
+    max_calories: Optional[float] = None,
     sort: Optional[str] = None,
 ) -> list[MenuItemWithMetrics]:
     """Fetch, filter, and sort menu items.
@@ -51,7 +53,16 @@ def list_menu_items(
         items = [i for i in items if i.price <= max_price]
 
     if min_protein is not None:
-        items = [i for i in items if (i.protein_grams or 0) >= min_protein]
+        items = [
+            i for i in items
+            if i.protein_grams is not None and i.protein_grams >= min_protein
+        ]
+
+    if min_calories is not None:
+        items = [i for i in items if i.calories is not None and i.calories >= min_calories]
+
+    if max_calories is not None:
+        items = [i for i in items if i.calories is not None and i.calories <= max_calories]
 
     if sort is not None:
         if sort not in VALID_SORT_KEYS:
