@@ -59,22 +59,35 @@ def test_homepage_returns_ranked_sections():
     assert response.status_code == 200
     data = response.json()
     assert set(data) == {
+        "featured",
+        "meals_under_budget",
+        "active_deals",
+        "free_food_today",
         "best_protein_per_dollar",
         "best_calories_per_dollar",
-        "meals_under_price",
     }
     assert len(data["best_protein_per_dollar"]) == 5
-    assert data["meals_under_price"][0]["name"] == "Double Cheeseburger"
+    assert data["meals_under_budget"][0]["name"] == "Double Cheeseburger"
+    assert data["featured"]["name"] == "Double Cheeseburger"
+    assert data["active_deals"] == []
+    assert data["free_food_today"] == []
 
 
-def test_homepage_under_price_query_param_controls_meals_under_price():
-    response = client.get("/homepage", params={"under_price": 7})
+def test_homepage_max_price_query_param_controls_meals_under_budget():
+    response = client.get("/homepage", params={"max_price": 7})
 
     assert response.status_code == 200
-    assert [item["name"] for item in response.json()["meals_under_price"]] == ["Double Cheeseburger"]
+    assert [item["name"] for item in response.json()["meals_under_budget"]] == ["Double Cheeseburger"]
 
 
-def test_homepage_rejects_negative_under_price():
-    response = client.get("/homepage", params={"under_price": -1})
+def test_homepage_rejects_negative_max_price():
+    response = client.get("/homepage", params={"max_price": -1})
 
     assert response.status_code == 422
+
+
+def test_nutrition_filters_exclude_items_with_missing_nutrition():
+    response = client.get("/menu-items", params={"min_calories": 500, "max_calories": 600})
+
+    assert response.status_code == 200
+    assert [item["name"] for item in response.json()] == ["Veggie Burrito", "Bibimbap"]

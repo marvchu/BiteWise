@@ -13,8 +13,8 @@ These features are required before the first usable release.
 ## Core Experience
 
 - Homepage dashboard
-- Best protein-per-dollar meals
-- Best calories-per-dollar meals
+- Best protein-per-dollar meals OPTIONAL
+- Best calories-per-dollar meals OPTIONAL
 - Meals under a configurable price
 - Active restaurant deals
 - Restaurant detail page
@@ -28,6 +28,14 @@ These features are required before the first usable release.
     - Lowest price
     - Protein per dollar
     - Calories per dollar
+So your value proposition becomes:
+
+Cheapest meals under $10
+Biggest portions (if you can crowdsource later)
+Student discounts
+BOGO deals
+Happy hour specials
+Free food events
 
 ## Backend
 

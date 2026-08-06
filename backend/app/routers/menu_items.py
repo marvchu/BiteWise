@@ -10,11 +10,17 @@ router = APIRouter(prefix="/menu-items", tags=["menu-items"])
 def list_menu_items(
     max_price: float | None = Query(default=None, ge=0),
     min_protein: float | None = Query(default=None, ge=0),
+    min_calories: float | None = Query(default=None, ge=0),
+    max_calories: float | None = Query(default=None, ge=0),
     sort: str | None = Query(default=None),
 ):
     try:
         return menu_items_service.list_menu_items(
-            max_price=max_price, min_protein=min_protein, sort=sort
+            max_price=max_price,
+            min_protein=min_protein,
+            min_calories=min_calories,
+            max_calories=max_calories,
+            sort=sort,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

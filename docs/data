@@ -19,6 +19,14 @@ The database does not know about API paths such as /menu-items or /deals. Those 
 
 Initial data can be entered manually through a seed script before automated ingestion is added.
 
+So your value proposition becomes:
+
+Cheapest meals under $10
+Biggest portions (if you can crowdsource later)
+Student discounts
+BOGO deals
+Happy hour specials
+Free food events
 
 
 Scrapers and Data Ingestion

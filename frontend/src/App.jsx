@@ -106,7 +106,8 @@ const homepageData = {
   ],
 }
 
-const filters = ['Under $10', 'High protein', 'Best value', 'Near campus']
+const filters = ['High protein', 'Best value', 'Near campus']
+const budgetOptions = [5, 10, 15, 20]
 
 function formatPrice(price) {
   return new Intl.NumberFormat('en-US', {
@@ -139,13 +140,34 @@ function Header({ isDarkMode, onToggleTheme }) {
   )
 }
 
-function SearchBar() {
+function SearchBar({ budget, query, isSearching, onBudgetChange, onQueryChange, onSubmit }) {
   return (
-    <form className="search" role="search">
+    <form className="search" role="search" onSubmit={onSubmit}>
       <label htmlFor="meal-search">Find affordable meals</label>
       <div className="search-row">
-        <input id="meal-search" type="search" placeholder="Search burritos, bowls, burgers" />
-        <button type="submit">Search</button>
+        <input
+          id="meal-search"
+          type="search"
+          placeholder="Search burritos, bowls, burgers"
+          value={query}
+          onChange={(event) => onQueryChange(event.target.value)}
+        />
+        <label className="budget-control" htmlFor="meal-budget">
+          <span>Budget</span>
+          <select
+            id="meal-budget"
+            value={budget}
+            onChange={(event) => onBudgetChange(event.target.value)}
+          >
+            {budgetOptions.map((amount) => (
+              <option value={amount} key={amount}>Under ${amount}</option>
+            ))}
+            <option value="">Any price</option>
+          </select>
+        </label>
+        <button type="submit" disabled={isSearching}>
+          {isSearching ? 'Searching...' : 'Search'}
+        </button>
       </div>
     </form>
   )
@@ -154,12 +176,53 @@ function SearchBar() {
 function FilterChips() {
   return (
     <div className="filter-strip" aria-label="Meal filters">
-      {filters.map((filter, index) => (
-        <button className={index === 0 ? 'chip active' : 'chip'} type="button" key={filter}>
+      {filters.map((filter) => (
+        <button className="chip" type="button" key={filter}>
           {filter}
         </button>
       ))}
     </div>
+  )
+}
+
+function RestaurantResults({ query, results, error, hasSearched }) {
+  if (!hasSearched) return null
+
+  return (
+    <section className="search-results" aria-labelledby="search-results-title">
+      <div className="section-heading">
+        <h2 id="search-results-title">
+          {query ? `Restaurants with “${query}”` : 'Restaurants within your budget'}
+        </h2>
+      </div>
+      {error ? <div className="empty-state" role="alert">{error}</div> : null}
+      {!error && results.length === 0 ? (
+        <div className="empty-state">No restaurants have a matching meal within this budget.</div>
+      ) : null}
+      {!error && results.length > 0 ? (
+        <div className="restaurant-results-grid">
+          {results.map((restaurant) => (
+            <article className="restaurant-result" key={restaurant.id}>
+              <div>
+                <h3>{restaurant.name}</h3>
+                {restaurant.address ? <p>{restaurant.address}</p> : null}
+              </div>
+              <strong className="result-price">
+                From {formatPrice(restaurant.lowest_matching_price)}
+              </strong>
+              <div className="matching-items">
+                {restaurant.matching_items.map((item) => (
+                  <div className="matching-item" key={item.id}>
+                    <span>{item.name}</span>
+                    <strong>{formatPrice(item.price)}</strong>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : null}
+    </section>
   )
 }
 
@@ -275,6 +338,34 @@ function MealSection({ title, meals, reason }) {
 function App() {
   const featuredMeal = homepageData.best_protein_per_dollar[0]
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [query, setQuery] = useState('')
+  const [budget, setBudget] = useState('10')
+  const [searchResults, setSearchResults] = useState([])
+  const [searchError, setSearchError] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false)
+
+  async function handleSearch(event) {
+    event.preventDefault()
+    setIsSearching(true)
+    setSearchError('')
+
+    const params = new URLSearchParams()
+    if (query.trim()) params.set('query', query.trim())
+    if (budget) params.set('max_price', budget)
+
+    try {
+      const response = await fetch(`/api/restaurants?${params.toString()}`)
+      if (!response.ok) throw new Error('Search request failed')
+      setSearchResults(await response.json())
+    } catch {
+      setSearchResults([])
+      setSearchError('Could not load restaurant results. Make sure the BiteWise API is running.')
+    } finally {
+      setHasSearched(true)
+      setIsSearching(false)
+    }
+  }
 
   return (
     <div className="app-theme" data-theme={isDarkMode ? 'dark' : 'light'}>
@@ -284,10 +375,23 @@ function App() {
           onToggleTheme={() => setIsDarkMode((current) => !current)}
         />
         <section className="hero-panel">
-          <SearchBar />
+          <SearchBar
+            budget={budget}
+            query={query}
+            isSearching={isSearching}
+            onBudgetChange={setBudget}
+            onQueryChange={setQuery}
+            onSubmit={handleSearch}
+          />
           <FilterChips />
           <FeaturedMeal meal={featuredMeal} />
         </section>
+        <RestaurantResults
+          query={query.trim()}
+          results={searchResults}
+          error={searchError}
+          hasSearched={hasSearched}
+        />
         <MealSection
           title="Meals under $10"
           meals={homepageData.meals_under_price}
