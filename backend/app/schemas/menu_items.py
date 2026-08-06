@@ -8,6 +8,7 @@ class MenuItem(BaseModel):
     restaurant_id: int
     name: str
     price: float
+    category: Optional[str] = None
     protein_grams: Optional[float] = None
     calories: Optional[float] = None
 

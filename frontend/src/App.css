@@ -122,6 +122,33 @@
   box-shadow: inset 0 0 0 1px var(--color-border);
 }
 
+.budget-control {
+  display: grid;
+  gap: 2px;
+  min-width: 132px;
+  min-height: 52px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.budget-control span {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: none;
+}
+
+.budget-control select {
+  border: 0;
+  outline: 0;
+  color: var(--color-text-strong);
+  background: transparent;
+  font: inherit;
+  font-weight: 750;
+}
+
 .search button,
 .details-button,
 .featured-action button {
@@ -429,8 +456,56 @@
   text-align: center;
 }
 
+.search-results {
+  padding-top: var(--space-section);
+}
+
+.restaurant-results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.restaurant-result {
+  display: grid;
+  gap: 16px;
+  padding: var(--space-card);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-hairline);
+}
+
+.restaurant-result h3 {
+  margin: 0 0 4px;
+  color: var(--color-text-strong);
+  font-size: 20px;
+}
+
+.restaurant-result p {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.result-price {
+  color: var(--color-green);
+}
+
+.matching-items {
+  display: grid;
+  gap: 8px;
+}
+
+.matching-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
 button,
-input {
+input,
+select {
   transition:
     background-color 220ms ease,
     border-color 160ms ease,
@@ -526,5 +601,9 @@ a:focus-visible {
 
   .search-row {
     flex-direction: column;
+  }
+
+  .restaurant-results-grid {
+    grid-template-columns: 1fr;
   }
 }
