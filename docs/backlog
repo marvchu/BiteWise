@@ -147,3 +147,11 @@ Implement only after they become necessary.
 - Background job queue
 - Analytics dashboard
 - Caching layer
+
+What I would do in your position
+Finish the MVP locally.
+Deploy React to Vercel.
+Dockerize FastAPI.
+Deploy that container to AWS App Runner.
+Eventually move PostgreSQL to RDS.
+Add GitHub Actions to run Pytest before deployment.
