@@ -25,3 +25,44 @@ Alternatives:
 Tradeoffs:
 
 - Smaller ecosystem than Express
+
+---
+
+## ADR-002
+
+Status:
+Accepted
+
+Decision:
+Start the database with restaurants, locations, and menu items only.
+
+Reasoning:
+
+- The MVP should first support browsing and searching affordable meals.
+- Deals and free-food events are important, but they require more product rules around freshness, expiration, and verification.
+- A smaller schema is easier to seed manually and validate against the current API.
+- Restaurant locations should be separate from restaurants because a restaurant can eventually have more than one location.
+- Menu items should belong to restaurants for the MVP, not directly to locations, because Berkeley MVP data can assume one shared menu per restaurant.
+
+Chosen first-version relationships:
+
+```text
+Restaurant has many Locations
+Restaurant has many MenuItems
+MenuItem belongs to Restaurant
+Location belongs to Restaurant
+```
+
+Deferred:
+
+- Deals
+- Free-food events
+- Price history
+- Location-specific menus/prices
+- Scrapers and automated ingestion
+
+Tradeoffs:
+
+- Keeping locations separate adds one table now, but avoids flattening address and coordinate data into restaurants.
+- Attaching menu items to restaurants is simpler than attaching them to locations, but it may need to change if different branches have different menus or prices.
+- Current price only is simpler than price history, but it cannot answer how prices changed over time.

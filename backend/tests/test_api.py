@@ -90,4 +90,8 @@ def test_nutrition_filters_exclude_items_with_missing_nutrition():
     response = client.get("/menu-items", params={"min_calories": 500, "max_calories": 600})
 
     assert response.status_code == 200
-    assert [item["name"] for item in response.json()] == ["Veggie Burrito", "Bibimbap"]
+    assert [item["name"] for item in response.json()] == [
+        "Veggie Burrito",
+        "Grilled Chicken Sandwich",
+        "Bibimbap",
+    ]

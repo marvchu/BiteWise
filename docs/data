@@ -47,6 +47,118 @@ Scrapers should not be required for the first working version.
 The initial MVP should use manually seeded data so the database, API, and frontend flow can be developed before ingestion automation.
 
 
+Initial Database Schema
+
+The first database version should contain only:
+
+- restaurants
+- locations
+- menu_items
+
+This matches the MVP decision to start with restaurants and menu items only, while storing address plus latitude/longitude for location support.
+
+### restaurants
+
+Purpose:
+
+Stores the restaurant identity and source metadata.
+
+Fields:
+
+- id
+- name
+- website_url
+- source_url
+- created_at
+- updated_at
+
+Notes:
+
+- `website_url` is the restaurant's public homepage when known.
+- `source_url` is where this restaurant record was created or verified from.
+- Do not put location coordinates directly on this table.
+
+### locations
+
+Purpose:
+
+Stores physical restaurant locations.
+
+Fields:
+
+- id
+- restaurant_id
+- address
+- latitude
+- longitude
+- created_at
+- updated_at
+
+Notes:
+
+- A restaurant can have many locations.
+- For the Berkeley MVP, most restaurants may have one location.
+- Walking time should not be stored yet; it should be computed later once user location behavior is defined.
+
+### menu_items
+
+Purpose:
+
+Stores current menu items and optional nutrition data.
+
+Fields:
+
+- id
+- restaurant_id
+- name
+- description
+- category
+- price
+- protein_grams
+- calories
+- source_url
+- created_at
+- updated_at
+
+Notes:
+
+- Menu items belong to restaurants in the MVP.
+- Menu items do not belong directly to locations yet.
+- `price` is the current known price only.
+- Missing nutrition should be stored as null, not zero.
+- `category` supports conservative search and future fallback imagery.
+- `source_url` is where the item/price/nutrition was found or verified.
+
+Deferred tables:
+
+- deals
+- free_food_events
+- price_history
+
+Deferred tables should be added only after the MVP restaurant/menu flow is working against the real database.
+
+
+Development Seed Data
+
+The first seed script should use real Berkeley restaurant names with approximate development data.
+
+Seed data rules:
+
+- It is for local development only.
+- It should be repeatable and safe to rerun.
+- It may use approximate prices, nutrition, and coordinates while the product is being developed.
+- It must not be presented as verified production data.
+- Each restaurant should have one location for the MVP.
+- Each restaurant should have a small number of menu items to test search, price filtering, and nutrition-null behavior.
+
+Run order once a local database exists:
+
+```text
+python -m alembic upgrade head
+python scripts/seed_dev_data.py
+```
+
+
 Menu Item Imagery
 
 Imagery should be added only when it helps students recognize and compare food options faster.
