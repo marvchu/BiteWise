@@ -36,20 +36,20 @@ def test_compute_metrics_uses_none_when_price_is_zero():
     assert result.calories_per_dollar is None
 
 
-def test_list_menu_items_filters_by_max_price_and_min_protein():
-    result = menu_items.list_menu_items(max_price=8.00, min_protein=30)
+def test_list_menu_items_filters_by_max_price_and_min_protein(db):
+    result = menu_items.list_menu_items(db, max_price=8.00, min_protein=30)
 
     assert [item.name for item in result] == ["Double Cheeseburger", "Grilled Chicken Sandwich"]
 
 
-def test_list_menu_items_sorts_by_price_ascending():
-    result = menu_items.list_menu_items(sort="price")
+def test_list_menu_items_sorts_by_price_ascending(db):
+    result = menu_items.list_menu_items(db, sort="price")
 
     assert [item.price for item in result] == sorted(item.price for item in result)
 
 
-def test_list_menu_items_sorts_by_protein_per_dollar_descending_with_missing_last():
-    result = menu_items.list_menu_items(sort="protein_per_dollar")
+def test_list_menu_items_sorts_by_protein_per_dollar_descending_with_missing_last(db):
+    result = menu_items.list_menu_items(db, sort="protein_per_dollar")
 
     metric_values = [item.protein_per_dollar for item in result]
     present_values = [value for value in metric_values if value is not None]
@@ -58,18 +58,18 @@ def test_list_menu_items_sorts_by_protein_per_dollar_descending_with_missing_las
     assert metric_values[-1] is None
 
 
-def test_list_menu_items_rejects_invalid_sort_key():
+def test_list_menu_items_rejects_invalid_sort_key(db):
     with pytest.raises(ValueError):
-        menu_items.list_menu_items(sort="distance")
+        menu_items.list_menu_items(db, sort="distance")
 
 
-def test_get_menu_item_returns_metrics_for_existing_item():
-    result = menu_items.get_menu_item(1)
+def test_get_menu_item_returns_metrics_for_existing_item(db):
+    result = menu_items.get_menu_item(db, 1)
 
     assert result is not None
     assert result.name == "Chicken Burrito Bowl"
     assert result.protein_per_dollar == 4.74
 
 
-def test_get_menu_item_returns_none_for_missing_item():
-    assert menu_items.get_menu_item(999) is None
+def test_get_menu_item_returns_none_for_missing_item(db):
+    assert menu_items.get_menu_item(db, 999) is None

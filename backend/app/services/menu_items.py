@@ -1,23 +1,31 @@
 """
 Core menu-item business logic: value-metric calculation, filtering,
-and sorting. Kept separate from routers so it can be reused by both
-the /menu-items endpoint and the /homepage endpoint (and, later, a
-mobile client hitting the same API).
+and sorting.
 """
 from typing import Optional
 
-from db.stub_data import get_all_menu_items
+from sqlalchemy.orm import Session
+
+from models.menu_item import MenuItem as MenuItemModel
 from schemas.menu_items import MenuItem, MenuItemWithMetrics
 
 VALID_SORT_KEYS = {"protein_per_dollar", "calories_per_dollar", "price"}
 
 
-def compute_metrics(item: MenuItem) -> MenuItemWithMetrics:
-    """Attach protein-per-dollar / calories-per-dollar to a menu item.
+def model_to_schema(item: MenuItemModel) -> MenuItem:
+    return MenuItem(
+        id=item.id,
+        restaurant_id=item.restaurant_id,
+        name=item.name,
+        price=float(item.price),
+        category=item.category,
+        protein_grams=float(item.protein_grams) if item.protein_grams is not None else None,
+        calories=item.calories,
+    )
 
-    Metrics are None if the source nutrition data is missing, or if
-    price is 0 (avoids a division error on free/promo items).
-    """
+
+def compute_metrics(item: MenuItem) -> MenuItemWithMetrics:
+    """Attach protein-per-dollar / calories-per-dollar to a menu item."""
     protein_per_dollar = None
     calories_per_dollar = None
 
@@ -35,40 +43,38 @@ def compute_metrics(item: MenuItem) -> MenuItemWithMetrics:
 
 
 def list_menu_items(
+    db: Session,
     max_price: Optional[float] = None,
     min_protein: Optional[float] = None,
     min_calories: Optional[float] = None,
     max_calories: Optional[float] = None,
     sort: Optional[str] = None,
 ) -> list[MenuItemWithMetrics]:
-    """Fetch, filter, and sort menu items.
-
-    This is the single source of truth for "what counts as a good
-    value item" — the homepage service calls this instead of
-    re-implementing filtering/sorting.
-    """
-    items = [compute_metrics(item) for item in get_all_menu_items()]
+    """Fetch menu items from the database, then enrich and sort them."""
+    query = db.query(MenuItemModel)
 
     if max_price is not None:
-        items = [i for i in items if i.price <= max_price]
+        query = query.filter(MenuItemModel.price <= max_price)
 
     if min_protein is not None:
-        items = [
-            i for i in items
-            if i.protein_grams is not None and i.protein_grams >= min_protein
-        ]
+        query = query.filter(MenuItemModel.protein_grams.is_not(None))
+        query = query.filter(MenuItemModel.protein_grams >= min_protein)
 
     if min_calories is not None:
-        items = [i for i in items if i.calories is not None and i.calories >= min_calories]
+        query = query.filter(MenuItemModel.calories.is_not(None))
+        query = query.filter(MenuItemModel.calories >= min_calories)
 
     if max_calories is not None:
-        items = [i for i in items if i.calories is not None and i.calories <= max_calories]
+        query = query.filter(MenuItemModel.calories.is_not(None))
+        query = query.filter(MenuItemModel.calories <= max_calories)
+
+    items = [compute_metrics(model_to_schema(item)) for item in query.all()]
 
     if sort is not None:
         if sort not in VALID_SORT_KEYS:
             raise ValueError(f"Invalid sort key: {sort}. Must be one of {VALID_SORT_KEYS}")
 
-        ascending = sort == "price"  # cheaper is better; higher value-per-dollar is better
+        ascending = sort == "price"
         missing_last = lambda i: getattr(i, sort) is None  # noqa: E731
 
         if ascending:
@@ -79,7 +85,6 @@ def list_menu_items(
     return items
 
 
-def get_menu_item(menu_item_id: int) -> Optional[MenuItemWithMetrics]:
-    from db.stub_data import get_menu_item_by_id
-    item = get_menu_item_by_id(menu_item_id)
-    return compute_metrics(item) if item else None
+def get_menu_item(db: Session, menu_item_id: int) -> Optional[MenuItemWithMetrics]:
+    item = db.get(MenuItemModel, menu_item_id)
+    return compute_metrics(model_to_schema(item)) if item else None
