@@ -6,7 +6,8 @@ from sqlalchemy import delete
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app"))
 
-from db.session import SessionLocal  # noqa: E402
+from db.base import Base  # noqa: E402
+from db.session import engine, SessionLocal  # noqa: E402
 from models import Location, MenuItem, Restaurant  # noqa: E402
 
 
@@ -163,6 +164,8 @@ SEED_RESTAURANTS = [
 
 
 def reset_seed_data() -> None:
+    Base.metadata.create_all(bind=engine)
+
     with SessionLocal() as db:
         db.execute(delete(MenuItem))
         db.execute(delete(Location))
