@@ -12,6 +12,7 @@ def test_list_menu_items_returns_items_with_metrics():
     data = response.json()
     assert len(data) == 6
     assert data[0]["name"] == "Chicken Burrito Bowl"
+    assert data[0]["restaurant_name"] == "Telegraph Taqueria"
     assert data[0]["protein_per_dollar"] == 4.74
     assert data[0]["calories_per_dollar"] == 68.42
 
@@ -69,6 +70,7 @@ def test_homepage_returns_ranked_sections():
     assert len(data["best_protein_per_dollar"]) == 5
     assert data["meals_under_budget"][0]["name"] == "Double Cheeseburger"
     assert data["featured"]["name"] == "Double Cheeseburger"
+    assert data["featured"]["restaurant_name"] == "Campus Cafe"
     assert data["active_deals"] == []
     assert data["free_food_today"] == []
 

@@ -6,6 +6,7 @@ class MenuItem(BaseModel):
     """Raw menu item data, as it would come from the database."""
     id: int
     restaurant_id: int
+    restaurant_name: Optional[str] = None
     name: str
     price: float
     category: Optional[str] = None

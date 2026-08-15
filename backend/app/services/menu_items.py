@@ -4,7 +4,7 @@ and sorting.
 """
 from typing import Optional
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from models.menu_item import MenuItem as MenuItemModel
 from schemas.menu_items import MenuItem, MenuItemWithMetrics
@@ -16,6 +16,7 @@ def model_to_schema(item: MenuItemModel) -> MenuItem:
     return MenuItem(
         id=item.id,
         restaurant_id=item.restaurant_id,
+        restaurant_name=item.restaurant.name,
         name=item.name,
         price=float(item.price),
         category=item.category,
@@ -51,7 +52,7 @@ def list_menu_items(
     sort: Optional[str] = None,
 ) -> list[MenuItemWithMetrics]:
     """Fetch menu items from the database, then enrich and sort them."""
-    query = db.query(MenuItemModel)
+    query = db.query(MenuItemModel).options(joinedload(MenuItemModel.restaurant))
 
     if max_price is not None:
         query = query.filter(MenuItemModel.price <= max_price)
@@ -86,5 +87,10 @@ def list_menu_items(
 
 
 def get_menu_item(db: Session, menu_item_id: int) -> Optional[MenuItemWithMetrics]:
-    item = db.get(MenuItemModel, menu_item_id)
+    item = (
+        db.query(MenuItemModel)
+        .options(joinedload(MenuItemModel.restaurant))
+        .filter(MenuItemModel.id == menu_item_id)
+        .one_or_none()
+    )
     return compute_metrics(model_to_schema(item)) if item else None

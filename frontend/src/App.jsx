@@ -1,110 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-
-const homepageData = {
-  best_protein_per_dollar: [
-    {
-      id: 3,
-      name: 'Double Cheeseburger',
-      restaurant: 'Top Dog Grill',
-      price: 6.5,
-      distance: '7 min walk',
-      protein_grams: 35,
-      calories: 780,
-      protein_per_dollar: 5.38,
-      calories_per_dollar: 120,
-      badge: 'Best value',
-    },
-    {
-      id: 4,
-      name: 'Grilled Chicken Sandwich',
-      restaurant: 'Campus Cafe',
-      price: 7.25,
-      distance: '9 min walk',
-      protein_grams: 38,
-      calories: 520,
-      protein_per_dollar: 5.24,
-      calories_per_dollar: 71.72,
-      badge: 'High protein',
-    },
-    {
-      id: 1,
-      name: 'Chicken Burrito Bowl',
-      restaurant: 'Telegraph Taqueria',
-      price: 9.5,
-      distance: '11 min walk',
-      protein_grams: 45,
-      calories: 650,
-      protein_per_dollar: 4.74,
-      calories_per_dollar: 68.42,
-      badge: 'Filling',
-    },
-  ],
-  best_calories_per_dollar: [
-    {
-      id: 2,
-      name: 'Veggie Burrito',
-      restaurant: 'Telegraph Taqueria',
-      price: 8,
-      distance: '11 min walk',
-      protein_grams: 15,
-      calories: 550,
-      protein_per_dollar: 1.88,
-      calories_per_dollar: 68.75,
-      badge: 'Under $10',
-    },
-    {
-      id: 5,
-      name: 'Bibimbap',
-      restaurant: 'Bancroft Korean',
-      price: 11,
-      distance: '13 min walk',
-      protein_grams: 28,
-      calories: 600,
-      protein_per_dollar: 2.55,
-      calories_per_dollar: 54.55,
-      badge: 'Balanced',
-    },
-  ],
-  meals_under_price: [
-    {
-      id: 3,
-      name: 'Double Cheeseburger',
-      restaurant: 'Top Dog Grill',
-      price: 6.5,
-      distance: '7 min walk',
-      protein_grams: 35,
-      calories: 780,
-      protein_per_dollar: 5.38,
-      calories_per_dollar: 120,
-      badge: 'Under $10',
-    },
-    {
-      id: 4,
-      name: 'Grilled Chicken Sandwich',
-      restaurant: 'Campus Cafe',
-      price: 7.25,
-      distance: '9 min walk',
-      protein_grams: 38,
-      calories: 520,
-      protein_per_dollar: 5.24,
-      calories_per_dollar: 71.72,
-      badge: 'High protein',
-    },
-    {
-      id: 2,
-      name: 'Veggie Burrito',
-      restaurant: 'Telegraph Taqueria',
-      price: 8,
-      distance: '11 min walk',
-      protein_grams: 15,
-      calories: 550,
-      protein_per_dollar: 1.88,
-      calories_per_dollar: 68.75,
-      badge: 'Under $10',
-    },
-  ],
-}
+import { useHomepage } from './hooks/useHomepage.js'
 
 const filters = ['High protein', 'Best value', 'Near campus']
 const budgetOptions = [5, 10, 15, 20]
@@ -246,13 +142,16 @@ function FeaturedMeal({ meal }) {
         <p className="featured-label">Best option right now</p>
         <div className="featured-title-row">
           <h1 id="featured-title">{meal.name}</h1>
-          <span className="featured-reason">{meal.badge}</span>
+          <span className="featured-reason">Best price</span>
         </div>
         <p className="featured-meta">
-          {meal.restaurant} - {meal.distance}
+          {meal.restaurant_name}
         </p>
         <div className="featured-metrics" aria-label="Featured meal metrics">
-          <FeaturedMetric label="protein" value={`${meal.protein_grams}g`} />
+          <FeaturedMetric
+            label="protein"
+            value={meal.protein_grams === null ? null : `${meal.protein_grams}g`}
+          />
           <FeaturedMetric label="protein per dollar" value={meal.protein_per_dollar} />
           <FeaturedMetric label="calories per dollar" value={meal.calories_per_dollar} />
         </div>
@@ -286,7 +185,7 @@ function MealCard({ meal, reason }) {
         <div className="meal-identity">
           <h3>{meal.name}</h3>
           <p>
-            {meal.restaurant} - {meal.distance}
+            {meal.restaurant_name}
           </p>
         </div>
         <strong className="meal-price">{formatPrice(meal.price)}</strong>
@@ -294,7 +193,10 @@ function MealCard({ meal, reason }) {
       <div className="meal-support">
         <span className="badge subtle">{reason || meal.badge}</span>
         <div className="meal-metrics">
-          <MealMetric label="protein" value={meal.protein_grams ? `${meal.protein_grams}g` : null} />
+          <MealMetric
+            label="protein"
+            value={meal.protein_grams === null ? null : `${meal.protein_grams}g`}
+          />
           <MealMetric label="protein/$" value={meal.protein_per_dollar} />
         </div>
       </div>
@@ -336,7 +238,6 @@ function MealSection({ title, meals, reason }) {
 }
 
 function App() {
-  const featuredMeal = homepageData.best_protein_per_dollar[0]
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [query, setQuery] = useState('')
   const [budget, setBudget] = useState('10')
@@ -344,6 +245,12 @@ function App() {
   const [searchError, setSearchError] = useState('')
   const [isSearching, setIsSearching] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
+  const {
+    data: homepageData,
+    error: homepageError,
+    isLoading: isHomepageLoading,
+    retry: retryHomepage,
+  } = useHomepage(budget)
 
   async function handleSearch(event) {
     event.preventDefault()
@@ -384,7 +291,21 @@ function App() {
             onSubmit={handleSearch}
           />
           <FilterChips />
-          <FeaturedMeal meal={featuredMeal} />
+          {isHomepageLoading ? (
+            <div className="empty-state" role="status">Loading recommendations...</div>
+          ) : null}
+          {homepageError ? (
+            <div className="empty-state" role="alert">
+              <p>{homepageError}</p>
+              <button type="button" onClick={retryHomepage}>Try again</button>
+            </div>
+          ) : null}
+          {!isHomepageLoading && !homepageError && homepageData?.featured ? (
+            <FeaturedMeal meal={homepageData.featured} />
+          ) : null}
+          {!isHomepageLoading && !homepageError && !homepageData?.featured ? (
+            <div className="empty-state">No meals are available within this budget yet.</div>
+          ) : null}
         </section>
         <RestaurantResults
           query={query.trim()}
@@ -392,21 +313,25 @@ function App() {
           error={searchError}
           hasSearched={hasSearched}
         />
-        <MealSection
-          title="Meals under $10"
-          meals={homepageData.meals_under_price}
-          reason="Under $10"
-        />
-        <MealSection
-          title="Best protein per dollar"
-          meals={homepageData.best_protein_per_dollar}
-          reason="Best value"
-        />
-        <MealSection
-          title="Best calories per dollar"
-          meals={homepageData.best_calories_per_dollar}
-          reason="Filling"
-        />
+        {homepageData && !homepageError ? (
+          <>
+            <MealSection
+              title={budget ? `Meals under $${budget}` : 'Affordable meals'}
+              meals={homepageData.meals_under_budget}
+              reason={budget ? `Under $${budget}` : 'Affordable'}
+            />
+            <MealSection
+              title="Best protein per dollar"
+              meals={homepageData.best_protein_per_dollar}
+              reason="Best value"
+            />
+            <MealSection
+              title="Best calories per dollar"
+              meals={homepageData.best_calories_per_dollar}
+              reason="Filling"
+            />
+          </>
+        ) : null}
       </main>
     </div>
   )
