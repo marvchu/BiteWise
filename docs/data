@@ -189,3 +189,5 @@ Recommended fields for a future menu item model:
 - unknown
 
 For the MVP, prefer manually assigning `category` in seed data over automatic classification. If the category is uncertain, use `unknown`.
+
+python -m uvicorn main:app --reload --app-dir app
