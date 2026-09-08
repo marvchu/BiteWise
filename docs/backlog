@@ -155,3 +155,11 @@ Dockerize FastAPI.
 Deploy that container to AWS App Runner.
 Eventually move PostgreSQL to RDS.
 Add GitHub Actions to run Pytest before deployment.
+
+Distributed systems: Figma's multiplayer system keeps many users editing the same document synchronized through persistent client/server connections. You have to think about concurrent edits, ordering, conflicts, reconnecting clients, and consistency.
+Databases and storage: deciding how data is modeled, partitioned, queried, replicated, migrated, and scaled—not merely calling PostgreSQL from an endpoint. Figma's recent infrastructure work includes building systems around growing Postgres workloads.
+Caching: determining what should live in memory/Redis-like systems so requests don't constantly hit databases. Figma recently built a new internal caching platform specifically around scalability and reliability.
+Performance: figuring out why something takes 500 ms instead of 100 ms, reducing unnecessary data transfer, optimizing queries, and changing client/server interactions. Figma has described infrastructure work specifically aimed at reducing interaction latency.
+Reliability: handling server crashes, network failures, retries, failover, data loss prevention, monitoring, and incident response. Their multiplayer infrastructure, for example, added a write-ahead log to improve durability.
+Infrastructure/platform: containers, Kubernetes, deployment systems, load balancing, service discovery, observability, CI/CD, AWS resources, and tooling that allows other engineers to deploy safely.
+Data pipelines: moving and processing huge quantities of data reliably; Figma has discussed rebuilding pipelines to move from multi-day latency toward near-real-time results.
