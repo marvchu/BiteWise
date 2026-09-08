@@ -60,12 +60,12 @@ def seed_test_data(db):
     )
 
     menu_items = [
-        MenuItem(id=1, restaurant_id=1, name="Chicken Burrito Bowl", price=Decimal("9.50"), category="bowl", protein_grams=Decimal("45.00"), calories=650),
-        MenuItem(id=2, restaurant_id=1, name="Veggie Burrito", price=Decimal("8.00"), category="burrito", protein_grams=Decimal("15.00"), calories=550),
-        MenuItem(id=3, restaurant_id=2, name="Double Cheeseburger", price=Decimal("6.50"), category="burger", protein_grams=Decimal("35.00"), calories=780),
-        MenuItem(id=4, restaurant_id=2, name="Grilled Chicken Sandwich", price=Decimal("7.25"), category="sandwich", protein_grams=Decimal("38.00"), calories=520),
-        MenuItem(id=5, restaurant_id=3, name="Bibimbap", price=Decimal("11.00"), category="rice", protein_grams=Decimal("28.00"), calories=600),
-        MenuItem(id=6, restaurant_id=3, name="Ramen", price=Decimal("10.50"), category="noodles", protein_grams=None, calories=None),
+        MenuItem(id=1, restaurant_id=1, name="Chicken Burrito Bowl", price=Decimal("9.50"), category="bowl", calories=650),
+        MenuItem(id=2, restaurant_id=1, name="Veggie Burrito", price=Decimal("8.00"), category="burrito", calories=550),
+        MenuItem(id=3, restaurant_id=2, name="Double Cheeseburger", price=Decimal("6.50"), category="burger", calories=780),
+        MenuItem(id=4, restaurant_id=2, name="Grilled Chicken Sandwich", price=Decimal("7.25"), category="sandwich", calories=520),
+        MenuItem(id=5, restaurant_id=3, name="Bibimbap", price=Decimal("11.00"), category="rice", calories=600),
+        MenuItem(id=6, restaurant_id=3, name="Ramen", price=Decimal("10.50"), category="noodles", calories=None),
     ]
 
     db.add_all(restaurants)

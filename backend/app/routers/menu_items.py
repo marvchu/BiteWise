@@ -11,7 +11,6 @@ router = APIRouter(prefix="/menu-items", tags=["menu-items"])
 @router.get("", response_model=list[MenuItemWithMetrics])
 def list_menu_items(
     max_price: float | None = Query(default=None, ge=0),
-    min_protein: float | None = Query(default=None, ge=0),
     min_calories: float | None = Query(default=None, ge=0),
     max_calories: float | None = Query(default=None, ge=0),
     sort: str | None = Query(default=None),
@@ -21,7 +20,6 @@ def list_menu_items(
         return menu_items_service.list_menu_items(
             db,
             max_price=max_price,
-            min_protein=min_protein,
             min_calories=min_calories,
             max_calories=max_calories,
             sort=sort,

@@ -20,6 +20,5 @@ def test_restaurant_relationships_match_initial_schema():
 def test_menu_item_nullable_nutrition_columns_match_product_rules():
     menu_items = Base.metadata.tables["menu_items"]
 
-    assert menu_items.c.protein_grams.nullable is True
     assert menu_items.c.calories.nullable is True
     assert menu_items.c.price.nullable is False

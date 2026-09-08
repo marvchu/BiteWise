@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import { useHomepage } from './hooks/useHomepage.js'
 
-const filters = ['High protein', 'Best value', 'Near campus']
+const filters = ['Best value', 'Near campus']
 const budgetOptions = [5, 10, 15, 20]
 
 function formatPrice(price) {
@@ -148,12 +148,11 @@ function FeaturedMeal({ meal }) {
           {meal.restaurant_name}
         </p>
         <div className="featured-metrics" aria-label="Featured meal metrics">
-          <FeaturedMetric
-            label="protein"
-            value={meal.protein_grams === null ? null : `${meal.protein_grams}g`}
-          />
-          <FeaturedMetric label="protein per dollar" value={meal.protein_per_dollar} />
           <FeaturedMetric label="calories per dollar" value={meal.calories_per_dollar} />
+          <FeaturedMetric
+            label="calories"
+            value={meal.calories === null ? null : `${meal.calories} cal`}
+          />
         </div>
       </div>
       <div className="featured-action">
@@ -194,10 +193,10 @@ function MealCard({ meal, reason }) {
         <span className="badge subtle">{reason || meal.badge}</span>
         <div className="meal-metrics">
           <MealMetric
-            label="protein"
-            value={meal.protein_grams === null ? null : `${meal.protein_grams}g`}
+            label="calories"
+            value={meal.calories === null ? null : `${meal.calories} cal`}
           />
-          <MealMetric label="protein/$" value={meal.protein_per_dollar} />
+          <MealMetric label="calories/$" value={meal.calories_per_dollar} />
         </div>
       </div>
       <button className="details-button" type="button">
@@ -319,11 +318,6 @@ function App() {
               title={budget ? `Meals under $${budget}` : 'Affordable meals'}
               meals={homepageData.meals_under_budget}
               reason={budget ? `Under $${budget}` : 'Affordable'}
-            />
-            <MealSection
-              title="Best protein per dollar"
-              meals={homepageData.best_protein_per_dollar}
-              reason="Best value"
             />
             <MealSection
               title="Best calories per dollar"

@@ -1,0 +1,65 @@
+{
+  "locations": [
+    {
+      "address": "2311 Telegraph Ave, Berkeley, CA 94704",
+      "latitude": 37.868367,
+      "longitude": -122.258959
+    }
+  ],
+  "menu_items": [
+    {
+      "name": "Chicken Bowl",
+      "description": "Fully loaded chicken bowl with one rice, one bean, every listed topping, and all paid add-ons.",
+      "category": "bowl",
+      "price": 15.45,
+      "price_max": 15.45,
+      "calories": 1345,
+      "calories_max": 1345
+    },
+    {
+      "name": "Steak Bowl",
+      "description": "Fully loaded steak bowl with one rice, one bean, every listed topping, and all paid add-ons.",
+      "category": "bowl",
+      "price": 17.45,
+      "price_max": 17.45,
+      "calories": 1315,
+      "calories_max": 1315
+    },
+    {
+      "name": "Barbacoa Bowl",
+      "description": "Fully loaded barbacoa bowl with one rice, one bean, every listed topping, and all paid add-ons.",
+      "category": "bowl",
+      "price": 17.45,
+      "price_max": 17.45,
+      "calories": 1335,
+      "calories_max": 1335
+    },
+    {
+      "name": "Carnitas Bowl",
+      "description": "Fully loaded carnitas bowl with one rice, one bean, every listed topping, and all paid add-ons.",
+      "category": "bowl",
+      "price": 16.20,
+      "price_max": 16.20,
+      "calories": 1375,
+      "calories_max": 1375
+    },
+    {
+      "name": "Sofritas Bowl",
+      "description": "Fully loaded sofritas bowl with one rice, one bean, every listed topping, and all paid add-ons.",
+      "category": "bowl",
+      "price": 15.45,
+      "price_max": 15.45,
+      "calories": 1315,
+      "calories_max": 1315
+    },
+    {
+      "name": "Veggie Bowl",
+      "description": "Fully loaded veggie bowl with one rice, one bean, every listed topping, and all paid add-ons.",
+      "category": "bowl",
+      "price": 15.45,
+      "price_max": 15.45,
+      "calories": 1165,
+      "calories_max": 1165
+    }
+  ]
+}

@@ -20,5 +20,4 @@ class HomepageResponse(BaseModel):
     meals_under_budget: list[MenuItemWithMetrics]
     active_deals: list[DealSummary] = Field(default_factory=list)
     free_food_today: list[FreeFoodEventSummary] = Field(default_factory=list)
-    best_protein_per_dollar: list[MenuItemWithMetrics] = Field(default_factory=list)
     best_calories_per_dollar: list[MenuItemWithMetrics] = Field(default_factory=list)

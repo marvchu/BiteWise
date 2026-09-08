@@ -2,7 +2,7 @@ from decimal import Decimal
 from pathlib import Path
 import sys
 
-from sqlalchemy import delete
+from sqlalchemy import delete, text
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app"))
 
@@ -31,7 +31,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample sandwich option.",
                 "category": "sandwich",
                 "price": Decimal("8.95"),
-                "protein_grams": None,
                 "calories": None,
             },
             {
@@ -39,7 +38,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample salad option.",
                 "category": "salad",
                 "price": Decimal("10.50"),
-                "protein_grams": None,
                 "calories": None,
             },
         ],
@@ -60,7 +58,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample classic hot dog.",
                 "category": "sandwich",
                 "price": Decimal("5.75"),
-                "protein_grams": Decimal("14.00"),
                 "calories": 320,
             },
             {
@@ -68,7 +65,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample sausage option.",
                 "category": "sandwich",
                 "price": Decimal("6.50"),
-                "protein_grams": Decimal("16.00"),
                 "calories": 360,
             },
         ],
@@ -89,7 +85,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample burrito option.",
                 "category": "burrito",
                 "price": Decimal("8.25"),
-                "protein_grams": Decimal("18.00"),
                 "calories": 620,
             },
             {
@@ -97,7 +92,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample chicken burrito.",
                 "category": "burrito",
                 "price": Decimal("10.75"),
-                "protein_grams": Decimal("35.00"),
                 "calories": 760,
             },
         ],
@@ -118,7 +112,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample pasta option.",
                 "category": "pasta",
                 "price": Decimal("9.95"),
-                "protein_grams": Decimal("14.00"),
                 "calories": 680,
             },
             {
@@ -126,7 +119,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample chicken pasta.",
                 "category": "pasta",
                 "price": Decimal("12.95"),
-                "protein_grams": Decimal("32.00"),
                 "calories": 920,
             },
         ],
@@ -147,7 +139,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample noodle option.",
                 "category": "noodles",
                 "price": Decimal("11.50"),
-                "protein_grams": Decimal("22.00"),
                 "calories": 780,
             },
             {
@@ -155,7 +146,6 @@ SEED_RESTAURANTS = [
                 "description": "Development sample rice plate.",
                 "category": "rice",
                 "price": Decimal("10.95"),
-                "protein_grams": Decimal("30.00"),
                 "calories": 720,
             },
         ],
@@ -194,6 +184,18 @@ def reset_seed_data() -> None:
             db.add(restaurant)
 
         db.commit()
+
+        if engine.dialect.name == "postgresql":
+            for table in ("restaurants", "locations", "menu_items"):
+                db.execute(
+                    text(
+                        "SELECT setval(pg_get_serial_sequence(:table_name, 'id'), "
+                        "COALESCE(MAX(id), 1), MAX(id) IS NOT NULL) "
+                        f"FROM {table}"
+                    ),
+                    {"table_name": table},
+                )
+            db.commit()
 
     print("Seeded development data.")
     print("Data is approximate and unverified; do not present it as production truth.")

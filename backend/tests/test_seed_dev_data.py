@@ -30,5 +30,4 @@ def test_seed_menu_items_have_required_fields():
             assert item["name"]
             assert item["category"]
             assert item["price"] > 0
-            assert "protein_grams" in item
             assert "calories" in item

@@ -17,8 +17,9 @@ class MenuItem(Base):
     description: Mapped[Optional[str]] = mapped_column(Text)
     category: Mapped[Optional[str]] = mapped_column(String(100), index=True)
     price: Mapped[Decimal] = mapped_column(Numeric(8, 2), index=True)
-    protein_grams: Mapped[Optional[Decimal]] = mapped_column(Numeric(8, 2))
+    price_max: Mapped[Optional[Decimal]] = mapped_column(Numeric(8, 2))
     calories: Mapped[Optional[int]]
+    calories_max: Mapped[Optional[int]]
     source_url: Mapped[Optional[str]] = mapped_column(String(2048))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

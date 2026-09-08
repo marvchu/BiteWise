@@ -21,9 +21,6 @@ def get_homepage(max_price: float = Query(default=10.0, ge=0), db: Session = Dep
         meals_under_budget=meals_under_budget,
         active_deals=[],
         free_food_today=[],
-        best_protein_per_dollar=menu_items_service.list_menu_items(
-            db, min_protein=0, sort="protein_per_dollar"
-        )[:SECTION_LIMIT],
         best_calories_per_dollar=menu_items_service.list_menu_items(
             db, min_calories=0, sort="calories_per_dollar"
         )[:SECTION_LIMIT],

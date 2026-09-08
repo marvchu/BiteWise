@@ -16,12 +16,12 @@ RESTAURANTS: list[Restaurant] = [
 ]
 
 MENU_ITEMS: list[MenuItem] = [
-    MenuItem(id=1, restaurant_id=1, name="Chicken Burrito Bowl", price=9.50, category="bowl", protein_grams=45, calories=650),
-    MenuItem(id=2, restaurant_id=1, name="Veggie Burrito", price=8.00, category="burrito", protein_grams=15, calories=550),
-    MenuItem(id=3, restaurant_id=2, name="Double Cheeseburger", price=6.50, category="burger", protein_grams=35, calories=780),
-    MenuItem(id=4, restaurant_id=2, name="Grilled Chicken Sandwich", price=7.25, category="sandwich", protein_grams=38, calories=520),
-    MenuItem(id=5, restaurant_id=3, name="Bibimbap", price=11.00, category="rice", protein_grams=28, calories=600),
-    MenuItem(id=6, restaurant_id=3, name="Ramen", price=10.50, category="noodles", protein_grams=None, calories=None),
+    MenuItem(id=1, restaurant_id=1, name="Chicken Burrito Bowl", price=9.50, category="bowl", calories=650),
+    MenuItem(id=2, restaurant_id=1, name="Veggie Burrito", price=8.00, category="burrito", calories=550),
+    MenuItem(id=3, restaurant_id=2, name="Double Cheeseburger", price=6.50, category="burger", calories=780),
+    MenuItem(id=4, restaurant_id=2, name="Grilled Chicken Sandwich", price=7.25, category="sandwich", calories=520),
+    MenuItem(id=5, restaurant_id=3, name="Bibimbap", price=11.00, category="rice", calories=600),
+    MenuItem(id=6, restaurant_id=3, name="Ramen", price=10.50, category="noodles", calories=None),
 ]
 
 

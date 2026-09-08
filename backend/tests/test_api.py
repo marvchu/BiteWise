@@ -13,17 +13,17 @@ def test_list_menu_items_returns_items_with_metrics():
     assert len(data) == 6
     assert data[0]["name"] == "Chicken Burrito Bowl"
     assert data[0]["restaurant_name"] == "Telegraph Taqueria"
-    assert data[0]["protein_per_dollar"] == 4.74
     assert data[0]["calories_per_dollar"] == 68.42
 
 
 def test_list_menu_items_filters_and_sorts_query_params():
-    response = client.get("/menu-items", params={"max_price": 8, "min_protein": 30, "sort": "price"})
+    response = client.get("/menu-items", params={"max_price": 8, "sort": "price"})
 
     assert response.status_code == 200
     assert [item["name"] for item in response.json()] == [
         "Double Cheeseburger",
         "Grilled Chicken Sandwich",
+        "Veggie Burrito",
     ]
 
 
@@ -64,10 +64,8 @@ def test_homepage_returns_ranked_sections():
         "meals_under_budget",
         "active_deals",
         "free_food_today",
-        "best_protein_per_dollar",
         "best_calories_per_dollar",
     }
-    assert len(data["best_protein_per_dollar"]) == 5
     assert data["meals_under_budget"][0]["name"] == "Double Cheeseburger"
     assert data["featured"]["name"] == "Double Cheeseburger"
     assert data["featured"]["restaurant_name"] == "Campus Cafe"

@@ -9,17 +9,15 @@ class MenuItem(BaseModel):
     restaurant_name: Optional[str] = None
     name: str
     price: float
+    price_max: Optional[float] = None
     category: Optional[str] = None
-    protein_grams: Optional[float] = None
     calories: Optional[float] = None
+    calories_max: Optional[float] = None
 
 
 class MenuItemWithMetrics(MenuItem):
     """Menu item enriched with computed value metrics.
 
-    protein_per_dollar / calories_per_dollar are None when the
-    underlying nutrition data isn't available, since those fields
-    are optional per the architecture doc.
+    calories_per_dollar is None when price or calorie data is unavailable.
     """
-    protein_per_dollar: Optional[float] = None
     calories_per_dollar: Optional[float] = None
