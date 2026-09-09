@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from models.restaurant import Restaurant as RestaurantModel
 from schemas.restaurants import RestaurantDetail, RestaurantSearchResult
 from services.menu_items import list_menu_items
+from services.distance import nearest_location
 
 
 def restaurant_address(restaurant: RestaurantModel) -> str | None:
@@ -15,10 +16,12 @@ def search_restaurants(
     db: Session,
     query: Optional[str] = None,
     max_price: Optional[float] = None,
+    coordinates: tuple[float, float] | None = None,
+    sort: str = "price",
 ) -> list[RestaurantSearchResult]:
     """Return restaurants with menu items matching the food query and budget."""
     normalized_query = query.strip().casefold() if query else None
-    eligible_items = list_menu_items(db, max_price=max_price, sort="price")
+    eligible_items = list_menu_items(db, max_price=max_price, sort="price", coordinates=coordinates)
     results: list[RestaurantSearchResult] = []
 
     for restaurant in db.query(RestaurantModel).all():
@@ -35,16 +38,24 @@ def search_restaurants(
         if not matching_items:
             continue
 
+        location, distance = nearest_location(restaurant.locations, coordinates)
         results.append(
             RestaurantSearchResult(
                 id=restaurant.id,
                 name=restaurant.name,
-                address=restaurant_address(restaurant),
+                address=location.address if location else None,
+                distance_miles=distance,
                 matching_items=matching_items,
                 lowest_matching_price=matching_items[0].price,
             )
         )
 
+    if sort == "distance_miles":
+        return sorted(results, key=lambda result: (
+            result.distance_miles is None,
+            result.distance_miles or 0,
+            result.lowest_matching_price,
+        ))
     return sorted(results, key=lambda result: result.lowest_matching_price)
 
 

@@ -9,6 +9,7 @@ class Restaurant(BaseModel):
     id: int
     name: str
     address: Optional[str] = None
+    distance_miles: Optional[float] = None
 
 
 class RestaurantSearchResult(Restaurant):

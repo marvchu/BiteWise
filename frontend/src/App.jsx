@@ -1,8 +1,12 @@
 import { useState } from 'react'
 import './App.css'
 import { useHomepage } from './hooks/useHomepage.js'
+import { useLocation } from './hooks/useLocation.js'
+import { useRestaurantSearch } from './hooks/useRestaurantSearch.js'
+import { LocationSelector } from './components/LocationSelector.jsx'
+import { Distance } from './components/Distance.jsx'
+import { MealDetailsDialog } from './components/MealDetailsDialog.jsx'
 
-const filters = ['Best value', 'Near campus']
 const budgetOptions = [5, 10, 15, 20]
 
 function formatPrice(price) {
@@ -12,7 +16,7 @@ function formatPrice(price) {
   }).format(price)
 }
 
-function Header({ isDarkMode, onToggleTheme }) {
+function Header({ isDarkMode, onToggleTheme, location }) {
   return (
     <header className="app-header">
       <a className="brand" href="/" aria-label="BiteWise home">
@@ -27,10 +31,7 @@ function Header({ isDarkMode, onToggleTheme }) {
         >
           <span>{isDarkMode ? 'Light' : 'Dark'}</span>
         </button>
-        <div className="location">
-          <span className="location-label">Near</span>
-          <span>UC Berkeley</span>
-        </div>
+        <LocationSelector location={location} />
       </div>
     </header>
   )
@@ -69,19 +70,21 @@ function SearchBar({ budget, query, isSearching, onBudgetChange, onQueryChange, 
   )
 }
 
-function FilterChips() {
+function FilterChips({ sort, onSortChange, hasLocation }) {
   return (
     <div className="filter-strip" aria-label="Meal filters">
-      {filters.map((filter) => (
-        <button className="chip" type="button" key={filter}>
-          {filter}
+      {[['price', 'Lowest price'], ['distance_miles', 'Closest']].map(([value, label]) => (
+        <button className={`chip${sort === value ? ' active' : ''}`} type="button" key={value}
+          aria-pressed={sort === value} onClick={() => onSortChange(value)}
+          disabled={value === 'distance_miles' && !hasLocation}>
+          {label}
         </button>
       ))}
     </div>
   )
 }
 
-function RestaurantResults({ query, results, error, hasSearched }) {
+function RestaurantResults({ query, results, error, hasSearched, onViewDetails }) {
   if (!hasSearched) return null
 
   return (
@@ -102,6 +105,7 @@ function RestaurantResults({ query, results, error, hasSearched }) {
               <div>
                 <h3>{restaurant.name}</h3>
                 {restaurant.address ? <p>{restaurant.address}</p> : null}
+                <Distance miles={restaurant.distance_miles} />
               </div>
               <strong className="result-price">
                 From {formatPrice(restaurant.lowest_matching_price)}
@@ -109,7 +113,7 @@ function RestaurantResults({ query, results, error, hasSearched }) {
               <div className="matching-items">
                 {restaurant.matching_items.map((item) => (
                   <div className="matching-item" key={item.id}>
-                    <span>{item.name}</span>
+                    <button className="details-button" type="button" data-meal-detail={item.id} onClick={() => onViewDetails(item)} aria-label={`View ${item.name} details`}>{item.name}</button>
                     <strong>{formatPrice(item.price)}</strong>
                   </div>
                 ))}
@@ -135,18 +139,22 @@ function FeaturedMetric({ label, value }) {
   )
 }
 
-function FeaturedMeal({ meal }) {
+function FeaturedMeal({ meal, budget, sort, onViewDetails }) {
   return (
     <section className="featured" aria-labelledby="featured-title">
       <div className="featured-copy">
         <p className="featured-label">Best option right now</p>
+        {budget && meal.price > Number(budget) ? (
+          <p>Lowest available price — above your ${budget} budget.</p>
+        ) : null}
         <div className="featured-title-row">
           <h1 id="featured-title">{meal.name}</h1>
-          <span className="featured-reason">Best price</span>
+          <span className="featured-reason">{sort === 'distance_miles' && meal.distance_miles != null && !(budget && meal.price > Number(budget)) ? 'Closest' : 'Best price'}</span>
         </div>
         <p className="featured-meta">
           {meal.restaurant_name}
         </p>
+        <Distance miles={meal.distance_miles} />
         <div className="featured-metrics" aria-label="Featured meal metrics">
           <FeaturedMetric label="calories per dollar" value={meal.calories_per_dollar} />
           <FeaturedMetric
@@ -158,7 +166,7 @@ function FeaturedMeal({ meal }) {
       <div className="featured-action">
         <span className="featured-price">{formatPrice(meal.price)}</span>
         <span className="featured-price-label">total price</span>
-        <button type="button">View details</button>
+        <button type="button" data-meal-detail={meal.id} onClick={() => onViewDetails(meal)}>View details</button>
       </div>
     </section>
   )
@@ -177,7 +185,7 @@ function MealMetric({ label, value }) {
   )
 }
 
-function MealCard({ meal, reason }) {
+function MealCard({ meal, reason, onViewDetails }) {
   return (
     <article className="meal-card">
       <div className="meal-card-top">
@@ -186,6 +194,7 @@ function MealCard({ meal, reason }) {
           <p>
             {meal.restaurant_name}
           </p>
+          <Distance miles={meal.distance_miles} />
         </div>
         <strong className="meal-price">{formatPrice(meal.price)}</strong>
       </div>
@@ -199,14 +208,14 @@ function MealCard({ meal, reason }) {
           <MealMetric label="calories/$" value={meal.calories_per_dollar} />
         </div>
       </div>
-      <button className="details-button" type="button">
+      <button className="details-button" type="button" data-meal-detail={meal.id} onClick={() => onViewDetails(meal)} aria-label={`View ${meal.name} details`}>
         View details
       </button>
     </article>
   )
 }
 
-function MealSection({ title, meals, reason }) {
+function MealSection({ title, meals, reason, onViewDetails }) {
   if (meals.length === 0) {
     return (
       <section className="meal-section" aria-labelledby={`${title.replaceAll(' ', '-')}-title`}>
@@ -229,7 +238,7 @@ function MealSection({ title, meals, reason }) {
       </div>
       <div className="meal-grid">
         {meals.map((meal) => (
-          <MealCard meal={meal} reason={reason} key={`${title}-${meal.id}`} />
+          <MealCard meal={meal} reason={reason} onViewDetails={onViewDetails} key={`${title}-${meal.id}`} />
         ))}
       </div>
     </section>
@@ -237,41 +246,28 @@ function MealSection({ title, meals, reason }) {
 }
 
 function App() {
+  const [selectedMeal, setSelectedMeal] = useState(null)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [query, setQuery] = useState('')
-  const [budget, setBudget] = useState('10')
-  const [searchResults, setSearchResults] = useState([])
-  const [searchError, setSearchError] = useState('')
-  const [isSearching, setIsSearching] = useState(false)
-  const [hasSearched, setHasSearched] = useState(false)
+  const [budget, setBudget] = useState('')
+  const location = useLocation()
+  const [selectedSort, setSelectedSort] = useState('price')
+  const sort = location.coordinates ? selectedSort : 'price'
+  const [submittedSearch, setSubmittedSearch] = useState(null)
+  const { results: searchResults, error: searchError, isSearching, hasSearched } =
+    useRestaurantSearch(submittedSearch, budget, location.coordinates, sort)
   const {
     data: homepageData,
     error: homepageError,
     isLoading: isHomepageLoading,
     retry: retryHomepage,
-  } = useHomepage(budget)
+  } = useHomepage(budget, location.coordinates, sort)
 
-  async function handleSearch(event) {
+  function handleSearch(event) {
     event.preventDefault()
-    setIsSearching(true)
-    setSearchError('')
-
-    const params = new URLSearchParams()
-    if (query.trim()) params.set('query', query.trim())
-    if (budget) params.set('max_price', budget)
-
-    try {
-      const response = await fetch(`/api/restaurants?${params.toString()}`)
-      if (!response.ok) throw new Error('Search request failed')
-      setSearchResults(await response.json())
-    } catch {
-      setSearchResults([])
-      setSearchError('Could not load restaurant results. Make sure the BiteWise API is running.')
-    } finally {
-      setHasSearched(true)
-      setIsSearching(false)
-    }
+    setSubmittedSearch({ query: query.trim() })
   }
+
 
   return (
     <div className="app-theme" data-theme={isDarkMode ? 'dark' : 'light'}>
@@ -279,6 +275,7 @@ function App() {
         <Header
           isDarkMode={isDarkMode}
           onToggleTheme={() => setIsDarkMode((current) => !current)}
+          location={location}
         />
         <section className="hero-panel">
           <SearchBar
@@ -289,7 +286,12 @@ function App() {
             onQueryChange={setQuery}
             onSubmit={handleSearch}
           />
-          <FilterChips />
+          <FilterChips sort={sort} onSortChange={setSelectedSort} hasLocation={Boolean(location.coordinates)} />
+          <p className="location-status" role="status">
+            {location.error || (location.isLocating ? 'Waiting for your browser location…' : location.coordinates
+              ? 'Distances from your current location. Straight-line estimates, not walking routes.'
+              : 'Use my location to see distances and sort by closest.')}
+          </p>
           {isHomepageLoading ? (
             <div className="empty-state" role="status">Loading recommendations...</div>
           ) : null}
@@ -300,17 +302,18 @@ function App() {
             </div>
           ) : null}
           {!isHomepageLoading && !homepageError && homepageData?.featured ? (
-            <FeaturedMeal meal={homepageData.featured} />
+            <FeaturedMeal meal={homepageData.featured} budget={budget} sort={sort} onViewDetails={setSelectedMeal} />
           ) : null}
           {!isHomepageLoading && !homepageError && !homepageData?.featured ? (
-            <div className="empty-state">No meals are available within this budget yet.</div>
+            <div className="empty-state">No meals are available yet.</div>
           ) : null}
         </section>
         <RestaurantResults
-          query={query.trim()}
+          query={submittedSearch?.query || ''}
           results={searchResults}
           error={searchError}
           hasSearched={hasSearched}
+          onViewDetails={setSelectedMeal}
         />
         {homepageData && !homepageError ? (
           <>
@@ -318,15 +321,18 @@ function App() {
               title={budget ? `Meals under $${budget}` : 'Affordable meals'}
               meals={homepageData.meals_under_budget}
               reason={budget ? `Under $${budget}` : 'Affordable'}
+              onViewDetails={setSelectedMeal}
             />
             <MealSection
               title="Best calories per dollar"
               meals={homepageData.best_calories_per_dollar}
               reason="Filling"
+              onViewDetails={setSelectedMeal}
             />
           </>
         ) : null}
       </main>
+      {selectedMeal ? <MealDetailsDialog meal={selectedMeal} location={location} onClose={() => setSelectedMeal(null)} /> : null}
     </div>
   )
 }

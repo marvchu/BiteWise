@@ -1,0 +1,92 @@
+.meal-dialog {
+  box-sizing: border-box;
+  width: min(620px, calc(100vw - 32px));
+  max-height: min(900px, calc(100dvh - 48px));
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.meal-dialog::backdrop { background: rgba(12, 20, 14, 0.48); }
+.meal-dialog-content { min-width: 0; }
+.meal-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+}
+.meal-dialog-eyebrow {
+  color: var(--color-green);
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px;
+}
+.meal-dialog-header h2 { margin: 0 0 6px; color: var(--color-text-strong); font-size: 28px; line-height: 1.15; }
+.meal-dialog-header p:last-child { margin: 0; color: var(--color-text-muted); }
+.meal-dialog-close {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-text-strong);
+  background: var(--color-surface-subtle);
+  font-size: 28px;
+  cursor: pointer;
+}
+.restaurant-map { width: 100%; height: 300px; background: #edf0e8; }
+.restaurant-map .leaflet-control-attribution { font-size: 11px; }
+.restaurant-map .leaflet-control-zoom a { width: 40px; height: 40px; line-height: 40px; }
+.restaurant-map .leaflet-tooltip { color: #202820; }
+.meal-map-placeholder { padding: 64px 24px; background: var(--color-surface-subtle); text-align: center; color: var(--color-text-muted); }
+.map-tile-error { padding: 8px 24px; font-size: 14px; background: var(--color-surface-subtle); }
+.map-tile-error button { margin-left: 8px; min-height: 44px; color: var(--color-green); background: none; border: 0; cursor: pointer; font: inherit; text-decoration: underline; }
+.meal-dialog-body { display: grid; gap: 18px; padding: 24px; }
+.meal-dialog-summary { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--color-border); }
+.meal-dialog-cost, .map-distance-summary { display: grid; gap: 3px; }
+.meal-dialog-cost strong { font-size: 32px; line-height: 1.1; color: var(--color-text-strong); }
+.meal-dialog-cost span, .map-distance-summary > span { font-size: 14px; color: var(--color-text-muted); }
+.map-distance-summary { text-align: right; }
+.map-distance-summary strong { font-size: 26px; color: var(--color-green); }
+.map-distance-summary strong span { font-size: 16px; font-weight: 500; }
+.map-destination { display: flex; gap: 12px; align-items: flex-start; }
+.map-destination strong { color: var(--color-text-strong); }
+.map-destination p { color: var(--color-text-muted); margin: 3px 0 0; font-size: 14px; }
+.map-key { display: inline-block; flex-shrink: 0; width: 12px; height: 12px; border: 2px solid var(--color-surface); border-radius: 50%; outline: 1px solid var(--color-border-strong); }
+.map-key-destination { background: #237a43; margin-top: 5px; }
+.map-key-origin { background: #202820; }
+.map-origin { display: flex; gap: 12px; align-items: center; margin: 0; font-size: 14px; color: var(--color-text-muted); }
+.meal-map-status:empty { display: none; }
+.meal-map-status p { margin: 0; color: var(--color-text-muted); font-size: 14px; line-height: 1.5; }
+.meal-dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.map-primary, .map-secondary {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 auto;
+  padding: 12px 16px;
+  min-height: 48px;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+.map-primary { background: #237a43; border: 1px solid #237a43; color: #ffffff; }
+.map-secondary { background: var(--color-surface); border: 1px solid var(--color-border-strong); color: var(--color-text-strong); }
+
+@media (max-width: 600px) {
+  .meal-dialog { width: 100dvw; max-width: 100dvw; max-height: 94dvh; margin: auto 0 0; border-radius: 24px 24px 0 0; border-bottom: 0; }
+  .meal-dialog-header { padding: 20px; }
+  .meal-dialog-header h2 { font-size: 25px; }
+  .restaurant-map { height: 260px; }
+  .meal-dialog-body { padding: 20px 20px max(24px, env(safe-area-inset-bottom)); }
+}

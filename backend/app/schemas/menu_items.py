@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
+from schemas.locations import LocationSummary
 
 
 class MenuItem(BaseModel):
@@ -13,6 +14,8 @@ class MenuItem(BaseModel):
     category: Optional[str] = None
     calories: Optional[float] = None
     calories_max: Optional[float] = None
+    distance_miles: Optional[float] = None
+    location: Optional[LocationSummary] = None
 
 
 class MenuItemWithMetrics(MenuItem):

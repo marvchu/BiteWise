@@ -69,6 +69,8 @@ def test_homepage_returns_ranked_sections():
     assert data["meals_under_budget"][0]["name"] == "Double Cheeseburger"
     assert data["featured"]["name"] == "Double Cheeseburger"
     assert data["featured"]["restaurant_name"] == "Campus Cafe"
+    assert len(data["meals_under_budget"]) == 5
+    assert data["meals_under_budget"][-1]["price"] == 10.5
     assert data["active_deals"] == []
     assert data["free_food_today"] == []
 
@@ -78,6 +80,16 @@ def test_homepage_max_price_query_param_controls_meals_under_budget():
 
     assert response.status_code == 200
     assert [item["name"] for item in response.json()["meals_under_budget"]] == ["Double Cheeseburger"]
+
+
+def test_homepage_features_cheapest_meal_when_budget_has_no_matches():
+    response = client.get("/homepage", params={"max_price": 5})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["meals_under_budget"] == []
+    assert data["featured"]["name"] == "Double Cheeseburger"
+    assert data["featured"]["price"] == 6.5
 
 
 def test_homepage_rejects_negative_max_price():

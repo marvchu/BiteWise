@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export function useHomepage(budget) {
+export function useHomepage(budget, coordinates, sort = 'price') {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -15,6 +15,11 @@ export function useHomepage(budget) {
 
       const params = new URLSearchParams()
       if (budget) params.set('max_price', budget)
+      params.set('sort', sort)
+      if (coordinates) {
+        params.set('latitude', coordinates.latitude)
+        params.set('longitude', coordinates.longitude)
+      }
 
       try {
         const response = await fetch(`/api/homepage?${params.toString()}`, {
@@ -34,7 +39,7 @@ export function useHomepage(budget) {
 
     loadHomepage()
     return () => controller.abort()
-  }, [budget, requestVersion])
+  }, [budget, coordinates, sort, requestVersion])
 
   return {
     data,

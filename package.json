@@ -2,6 +2,7 @@
   "name": "bitewise",
   "private": true,
   "scripts": {
-    "backend": ".venv\\Scripts\\python.exe -m uvicorn main:app --reload --app-dir backend/app"
+    "dev": "npm --prefix frontend run dev",
+    "backend": "venv\\Scripts\\python.exe -m uvicorn main:app --reload --app-dir backend/app"
   }
 }
