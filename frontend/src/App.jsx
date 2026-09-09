@@ -40,7 +40,7 @@ function Header({ isDarkMode, onToggleTheme, location }) {
 function SearchBar({ budget, query, isSearching, onBudgetChange, onQueryChange, onSubmit }) {
   return (
     <form className="search" role="search" onSubmit={onSubmit}>
-      <label htmlFor="meal-search">Find affordable meals</label>
+      <label htmlFor="meal-search">Find meals</label>
       <div className="search-row">
         <input
           id="meal-search"
@@ -186,6 +186,7 @@ function MealMetric({ label, value }) {
 }
 
 function MealCard({ meal, reason, onViewDetails }) {
+  const badge = reason === null ? null : reason || meal.badge
   return (
     <article className="meal-card">
       <div className="meal-card-top">
@@ -199,7 +200,7 @@ function MealCard({ meal, reason, onViewDetails }) {
         <strong className="meal-price">{formatPrice(meal.price)}</strong>
       </div>
       <div className="meal-support">
-        <span className="badge subtle">{reason || meal.badge}</span>
+        {badge ? <span className="badge subtle">{badge}</span> : null}
         <div className="meal-metrics">
           <MealMetric
             label="calories"
@@ -289,7 +290,7 @@ function App() {
           <FilterChips sort={sort} onSortChange={setSelectedSort} hasLocation={Boolean(location.coordinates)} />
           <p className="location-status" role="status">
             {location.error || (location.isLocating ? 'Waiting for your browser location…' : location.coordinates
-              ? 'Distances from your current location. Straight-line estimates, not walking routes.'
+              ? 'Walking estimates use 1.3× straight-line distance and a pace of 80 meters per minute. Actual routes and times may vary.'
               : 'Use my location to see distances and sort by closest.')}
           </p>
           {isHomepageLoading ? (
@@ -318,15 +319,15 @@ function App() {
         {homepageData && !homepageError ? (
           <>
             <MealSection
-              title={budget ? `Meals under $${budget}` : 'Affordable meals'}
+              title={budget ? `Meals under $${budget}` : 'Meals'}
               meals={homepageData.meals_under_budget}
-              reason={budget ? `Under $${budget}` : 'Affordable'}
+              reason={budget ? `Under $${budget}` : null}
               onViewDetails={setSelectedMeal}
             />
             <MealSection
               title="Best calories per dollar"
               meals={homepageData.best_calories_per_dollar}
-              reason="Filling"
+              reason={null}
               onViewDetails={setSelectedMeal}
             />
           </>

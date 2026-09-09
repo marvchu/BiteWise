@@ -1,4 +1,5 @@
 .app-theme {
+  color-scheme: light;
   min-height: 100vh;
   color: var(--color-text);
   background: var(--color-page);
@@ -8,6 +9,7 @@
 }
 
 .app-theme[data-theme='dark'] {
+  color-scheme: dark;
   --color-page: #10130f;
   --color-surface: #171b16;
   --color-surface-subtle: #141812;
@@ -174,9 +176,14 @@ button:disabled {
   border: 0;
   outline: 0;
   color: var(--color-text-strong);
-  background: transparent;
+  background: var(--color-surface);
   font: inherit;
   font-weight: 750;
+}
+
+.budget-control option {
+  color: var(--color-text-strong);
+  background: var(--color-surface);
 }
 
 .search button,
@@ -311,6 +318,7 @@ button:disabled {
   margin-top: 6px;
   padding: 0 18px;
   background: var(--color-text-strong);
+  color: var(--color-surface);
 }
 
 .featured-metrics {
@@ -553,7 +561,7 @@ button:hover {
 }
 
 .featured-action button:hover {
-  background: #253024;
+  background: var(--color-text);
 }
 
 .details-button:hover {

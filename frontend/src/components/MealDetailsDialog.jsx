@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useMealDetails } from '../hooks/useMealDetails.js'
 import { RestaurantMap } from './RestaurantMap.jsx'
+import { formatEstimatedWalkingDistance } from '../utils/distance.js'
 import './MealDetailsDialog.css'
 
 export function MealDetailsDialog({ meal, location, onClose }) {
@@ -9,6 +10,7 @@ export function MealDetailsDialog({ meal, location, onClose }) {
   const { detail, error, isLoading, retry } = useMealDetails(meal.id, location.coordinates)
   const current = detail || meal
   const destination = detail?.location
+  const walkingDistance = formatEstimatedWalkingDistance(detail?.distance_miles)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -51,10 +53,10 @@ export function MealDetailsDialog({ meal, location, onClose }) {
               <strong>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(current.price)}</strong>
               <span>meal price</span>
             </div>
-            {detail?.distance_miles != null ? (
+            {walkingDistance !== null ? (
               <div className="map-distance-summary">
-                <strong>{detail.distance_miles < 0.1 ? '<0.1' : detail.distance_miles.toFixed(1)} mi</strong>
-                <span>straight-line distance</span>
+                <strong>{walkingDistance}</strong>
+                <span>estimated walking distance</span>
               </div>
             ) : null}
           </div>
